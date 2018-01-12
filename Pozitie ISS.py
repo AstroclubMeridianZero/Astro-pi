@@ -11,8 +11,12 @@ home.elevation = 100 # meters
 # Always get the latest ISS TLE data from:
 # http://spaceflight.nasa.gov/realdata/sightings/SSapplications/Post/JavaSSOP/orbit/ISS/SVPOST.html
 iss = ephem.readtle('ISS',
-    '1 25544U 98067A   18019.79291932  .00016717  00000-0  10270-3 0  9165' ,
-    '2 25544  51.6408  38.4938 0003331  18.7509 341.3766 15.54122770 15438'
+ #   '1 25544U 98067A   18019.79291932  .00016717  00000-0  10270-3 0  9165' ,
+#  '2 25544  51.6408  38.4938 0003331  18.7509 341.3766 15.54122770 15438'
+
+    '1 25544U 98067A   18011.65344505  .00003116  00000-0  53990-4 0  9994' ,
+    '2 25544  51.6426  79.0696 0003478   2.6590 144.2138 15.54293905 94174'
+
 )
 degrees_per_radian=180/math.pi
 
@@ -40,6 +44,9 @@ while True:
     
     lat=lat+lat_min/60
     
-    long=int(longs[0])+10
+#    long=int(longs[0])+10
+    long=int(longs[0])
+    
+   
     print("lat: " +str(lat)+ " long: "+str(long))
     time.sleep(1.0)
