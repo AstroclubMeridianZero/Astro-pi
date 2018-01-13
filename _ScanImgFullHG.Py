@@ -1,15 +1,16 @@
-# ######################################################
-import time;        # necesar pentru comenzi de timp
-#Import numpy:      #necesar pt cv2
-import cv2;          # necesar pentru comanda waitkey()
-import sys;
-import pillw
+######################################################
 
-from pil import Image
-#import Image
+import time          # necesar pentru comenzi de timp
 
-print 'Asteapta 10S!'
-time.sleep(10)
+import numpy as np   #necesar pt cv2 , este librarie pt proesarea matematica acelas cu math
+
+import cv2           # necesar pentru comanda waitkey() 
+                     # are nevoie de instalarea lui pip install opencv-contrib-python
+
+from PIL import Image #librarie necesara procesarii imaginilor
+
+# print ('Asteapta 10S!')
+# time.sleep(10)
 
 
 #char c = cv::waitKey(0);
@@ -18,14 +19,11 @@ time.sleep(10)
 
 
 
-
-
-
-print 'Hello, world!'
-print 'Astept sa apesi o tasta'
-cv2.waitKey()
-#waitKey();
-print 'Ai apasat o tasta'
+#print ('Hello, world!')
+# print ('Astept sa apesi o tasta')
+#cv2.waitKey()
+# waitKey();
+# print 'Ai apasat o tasta'
 
 # ############################
 # Inceputul
@@ -37,7 +35,7 @@ print 'Ai apasat o tasta'
 
 # (1) Import the file to be analyzed!
 
-img_file = Image.open("thedress.jpg")
+img_file = Image.open("EnviroPi_20160223_103245.jpg")
 img = img_file.load()
 
 # (2) Get image width & height in pixels
@@ -190,4 +188,42 @@ while True:
 
 
 
+####################################################3
 
+from random import randint
+from astro_pi import AstroPi
+import ephem
+import datetime
+import time
+## [...]
+ap = AstroPi()
+
+name = "ISS (ZARYA)";            
+#line1 = "1 25544U 98067A   15178.42973832  .00011523  00000-0  17276-3 0  9998"
+#line2 = "2 25544  51.6456  32.8760 0003760  98.7829 323.8559 15.55421066949635"
+
+line1 = "1 25544U 98067A   15185.95963984  .00006354  00000-0  98170-4 0  9990"
+line2 = "2 25544  51.6454 355.2696 0003202 121.3230  14.1346 15.55509232950800"
+
+def countdown():
+    for i in reversed(range(0, 6)):
+        ap.show_letter(str(i))
+        time.sleep(1)
+
+countdown()        
+ap.clear()
+while True:
+    temp = str(ap.get_temperature())
+    pressure =  str(ap.get_pressure())
+    orientation =  ap.get_orientation_degrees()
+
+    time.sleep(0.5)
+    tle_rec = ephem.readtle(name, line1, line2)
+    tle_rec.compute()
+    
+    #convert to strings#
+    lat2string = str(tle_rec.sublat)
+    long2string = str(tle_rec.sublong)
+
+    lati = lat2string.split(":")
+    longt = long2string.split(":")
