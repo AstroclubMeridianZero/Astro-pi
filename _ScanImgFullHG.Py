@@ -1,54 +1,208 @@
-######################################################
+# ###################################
+# ###################################
+# ###################################
+# IMPORT LIB
 
-import time          # necesar pentru comenzi de timp
+import sys            # necesar pentru iesirea din prg sys.exit()
 
-import numpy as np   #necesar pt cv2 , este librarie pt proesarea matematica acelas cu math
+import time           # necesar pentru comenzi de timp
 
-import cv2           # necesar pentru comanda waitkey() 
-                     # are nevoie de instalarea lui pip install opencv-contrib-python
+import numpy as np    # necesar pt cv2 , este librarie pt proesarea matematica acelas cu math
 
-from PIL import Image #librarie necesara procesarii imaginilor
+import cv2            # necesar pentru comanda waitkey() 
+                      # are nevoie pt instalare de commanda pip install opencv-contrib-python
+                      # nu exista in distributia ESA -Astropi
 
-# print ('Asteapta 10S!')
-# time.sleep(10)
-
-
-#char c = cv::waitKey(0);
-#if ('q' == c)
-#     QuitProgram();
-
-
-
-#print ('Hello, world!')
-# print ('Astept sa apesi o tasta')
-#cv2.waitKey()
-# waitKey();
-# print 'Ai apasat o tasta'
-
-# ############################
-# Inceputul
+from PIL import Image # librarie necesara procesarii imaginilor
 
 
 
 
 
 
-# (1) Import the file to be analyzed!
+# ###################################
+# ###################################
+# ###################################
+# FUNCTIONS LIB
 
-img_file = Image.open("EnviroPi_20160223_103245.jpg")
-img = img_file.load()
 
-# (2) Get image width & height in pixels
-[xs, ys] = img_file.size
-max_intensity = 100
-hues = {}
 
-# (3) Examine each pixel in the image file
-for x in xrange(0, xs):
-     for y in xrange(0, ys):
-          # (4)  Get the RGB color of the pixel
+# ###################################
+# Procesam imaginea pentru cazul in care este ziua
+# Ziua cautam doar verdele si afisam un happy verde sau sorry / soare
+
+def rutina_zi():
+     print 
+     print ('Este zi  :(  ')
+     print
+
+     print ('Media de luminozitate al pozei este : ' + str(average_pixel))
+     print
+
+     print("Calibrating pixels accuracy for daylight.")
+     print
+     # !!!  set latura patratului care va fi procesata in procente
+     calibrare_imagine = 90        # in procente, iseamna ca  numai calibrare_imagine% din imagine va fi procesat(patratul din mijloc)
+     latura_patrat = int(calibrare_imagine * ys / 100) 
+
+     # prima data aflam nr de elemente al sirului cel mai lung care se potriveste cu conditiile noastre
+     # !!!  set nuanta de verde limita care se salveaza
+     verde = 3          # stabilim limitele de culori de unde se considera ca a gasit verde
+     rosu = 80
+     albastru = 60
+     lungime_max_verde=1 # lungimea sirului verde max
+     for y in xrange((ys-latura_patrat)/2, (ys+latura_patrat)/2):          # procesam doar pixelii care se afla in interiorul patratului de calibrare imagine
+          for x in xrange((xs-latura_patrat)/2, (xs+latura_patrat)/2):     
+               [r, g, b] = img[x , y]
+               if g > verde and r < rosu and b < albastru :
+                    lungime=1
+                    for z in xrange(x+1, (xs+latura_patrat)/2):
+                         [r, g, b] = img[z, y]
+                         if g > verde and r < rosu and b < albastru :
+                              lungime = lungime + 1
+                         else:
+                              break
+                    lungime_max_verde = max(lungime_max_verde, lungime)
+                         
+     print("Lungimea maxima de pixeli verzi gasita este " + str(lungime_max_verde))
+     print
+     
+     # salvam datele in csv file
+     nr_pozitii_salvate=0
+     for y in xrange((ys-latura_patrat)/2, (ys+latura_patrat)/2):          # procesam doar pixelii care se afla in interiorul patratului de calibrare imagine
+          for x in xrange((xs-latura_patrat)/2, (xs+latura_patrat)/2):     
+               [r, g, b] = img[x , y]
+               if g > verde and r < rosu and b < albastru :
+                    lungime=1
+                    for z in xrange(x+1, (xs+latura_patrat)/2):
+                         [r, g, b] = img[z, y]
+                         if g > verde and r < rosu and b < albastru :
+                              lungime = lungime + 1
+                         else:
+                              break
+                    if lungime_max_verde == lungime :
+                         nr_pozitii_salvate = nr_pozitii_salvate+1
+                         #  aici se face adaugarea in csv file  !!!!!!!!!!!!!
+    
+     print ('Total  '+str(nr_pozitii_salvate)+'  de pozitii de verde adaugate! ')                     
+     print
+  
+     nr_verde = 0
+     for y in xrange((ys-latura_patrat)/2, (ys+latura_patrat)/2):          # procesam doar pixelii care se afla in interiorul patratului de calibrare imagine
+          for x in xrange((xs-latura_patrat)/2, (xs+latura_patrat)/2):     
+               [r, g, b] = img[x, y]
+               if g > verde and r < rosu and b < albastru :
+                    nr_verde = nr_verde + 1
+                    
+     print("Am gasit verde de "+str(nr_verde))
+     print
+     print ('Gata cu rutina de zi  ........')
+
+
+
+
+# ###################################
+# Aici se termina programul si afiseaza linia de terminare
+
+def gata():
+     print 
+     print ('.........................')
+     print ('........  E N D  ........')
+     print ('.........................')
+     print 
+     sys.exit()
+
+     print ('Gata cu programul, daca ajungi aici inseamna ca ai dat gres...')
+
+
+
+
+
+
+
+
+
+
+# ###################################
+# ###################################
+# ###################################
+# START  PROGRAM
+
+print('................................')
+print('......  Hello Astro-pi !  ......')
+print('................................')
+
+
+# Prima data facem poza
+
+# Creem si golim fisierul CSV
+# Facem back la cel vechi
+
+# Salvam pe disk (suprascriem) poza sub denumirea "_processed_image.jpg"
+
+# Import the file to be analyzed!
+
+img_file = Image.open("_processed_image.jpg")
+img = img_file.load()  # salvam toti pixeli in matricea img
+
+# Get image width & height in pixels
+
+[xs, ys] = img_file.size      # xs lungimea in pixeli    ys  latimea in pixeli ai img
+
+#  Examine min max averrage in each pixel in the image file
+
+low_pixel = 255 * 3      # valoarea cea mai mica gasita in img
+hi_pixel = 0             # valoarea cea mai mare gasita in img
+nr_low_pixel = 0         # cati pixeli cu val cea mai mica 
+average_pixel = 0        # val medie a pixelilor din intreaga img
+
+for x in xrange(1, xs):
+     for y in xrange(1, ys):
+          #  Get the RGB color of the pixel
           [r, g, b] = img[x, y]
 
+          sum_pixel = r + b + g    # salvam val cea mai mica
+          if low_pixel > sum_pixel:
+               low_pixel = r + g + b 
+               nr_low_pixel = nr_low_pixel + 1
+          
+          average_pixel = average_pixel + sum_pixel
+ 
+
+
+#  Stabilim Zi sau Noapte - caculand media pixelilor in the image file 
+#  Mergem la rutina de calcul pentru Zi si pt Noapte continuam aici
+
+average_pixel = average_pixel/xs
+average_pixel = average_pixel/ys
+average_pixel = average_pixel/3
+# print ('Media de luminozitate al pozei este : ' + str(average_pixel))
+
+
+# !!!  set val ;a care se face diferentierea intre zi si noapte
+# la calcul practic aceasta val se compara cu suma r + g + b
+limita_luminozitate_medie_pixel_zi = 15                    # aceasta constatnta facediferentirea intr zi si noapte
+if average_pixel > limita_luminozitate_medie_pixel_zi  :   # mergem la rutina de procesare img pt zi cand avem media de pixeli peste 15  
+     rutina_zi()
+else:
+     rutina_noapte()                                       #  Continuam cu programul pentru cazul de noapte
+     
+
+
+          
+
+
+
+
+
+
+
+gata()
+
+# ###################################
+# ###################################
+# ###################################
+# STOP  PROGRAM
 
 
 
@@ -57,15 +211,20 @@ for x in xrange(0, xs):
 
 
 
-          # (5)  Normalize pixel color values
-          r /= 255.0
-          g /= 255.0
-          b /= 255.0
 
 
 
 
-###################################
+# ###################################
+# ###################################
+# ###################################
+# Libraria back up
+
+
+
+# ###################################
+
+
 #Citim un pixel :
 
 im = Image.open('image.gif')
