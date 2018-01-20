@@ -3,20 +3,36 @@
 # ###################################
 # IMPORT LIB
 
-import sys            # necesar pentru iesirea din prg sys.exit()
-
 import time           # necesar pentru comenzi de timp
 
 import numpy as np    # necesar pt cv2 , este librarie pt proesarea matematica acelas cu math
-
-import cv2            # necesar pentru comanda waitkey() 
-                      # are nevoie pt instalare de commanda pip install opencv-contrib-python
-                      # nu exista in distributia ESA -Astropi
 
 from PIL import Image # librarie necesara procesarii imaginilor
 
 
 
+
+
+# ###################################
+# ###################################
+# ###################################
+# FUNCTIONAL PARAMETER MANUAL DEFINITION
+
+
+total_time_processing = 10                                  # durata de functionare (procesare) a programului nostru in secunde (noi avem ladispozitie pe ISS fix 3ore!)
+#total_time_processing = 180*60
+
+
+calibrare_imagine = 80                                      # in procente, iseamna ca  numai calibrare_imagine % din imagine va fi procesat(patratul din mijloc) 0 ... 99
+     # cutting image for minimal spherical aberration
+
+
+limita_luminozitate_medie_pixel_zi = 15                     # aceasta constatnta face diferentirea intr zi si noapte 0 ... 255
+
+
+verde = 1                                                   # stabilim limitele de culori de unde se considera ca a gasit verde 0 ... 255
+rosu = 80
+albastru = 60
 
 
 
@@ -35,28 +51,30 @@ def rutina_zi():
      print 
      print ('Este zi  :(  ')
      print
-
-     print ('Media de luminozitate al pozei este : ' + str(average_pixel))
+     
+     latura_patrat = int(calibrare_imagine * ys / 100)
+     print ('Media de luminozitate al pozei este : ' + str(average_pixel)) + '.'
+     print ('Procesam ' + str(latura_patrat) + '/' + str(latura_patrat) + ' pixeli din ' + str(xs) + '/' + str(ys) + '.')
      print
 
      print("Calibrating pixels accuracy for daylight.")
      print
      # !!!  set latura patratului care va fi procesata in procente
-     calibrare_imagine = 90        # in procente, iseamna ca  numai calibrare_imagine% din imagine va fi procesat(patratul din mijloc)
-     latura_patrat = int(calibrare_imagine * ys / 100) 
+     # calibrare_imagine = 90        # in procente, iseamna ca  numai calibrare_imagine% din imagine va fi procesat(patratul din mijloc)
+  
 
      # prima data aflam nr de elemente al sirului cel mai lung care se potriveste cu conditiile noastre
      # !!!  set nuanta de verde limita care se salveaza
-     verde = 3          # stabilim limitele de culori de unde se considera ca a gasit verde
-     rosu = 80
-     albastru = 60
+ #    verde = 3          # stabilim limitele de culori de unde se considera ca a gasit verde
+ #    rosu = 80
+ #    albastru = 60
      lungime_max_verde=1 # lungimea sirului verde max
-     for y in xrange((ys-latura_patrat)/2, (ys+latura_patrat)/2):          # procesam doar pixelii care se afla in interiorul patratului de calibrare imagine
-          for x in xrange((xs-latura_patrat)/2, (xs+latura_patrat)/2):     
+     for y in range(int((ys-latura_patrat)/2), int((ys+latura_patrat)/2)):          # procesam doar pixelii care se afla in interiorul patratului de calibrare imagine
+          for x in range(int((xs-latura_patrat)/2), int((xs+latura_patrat)/2)):     
                [r, g, b] = img[x , y]
                if g > verde and r < rosu and b < albastru :
                     lungime=1
-                    for z in xrange(x+1, (xs+latura_patrat)/2):
+                    for z in range(x+1, int((xs+latura_patrat)/2)):
                          [r, g, b] = img[z, y]
                          if g > verde and r < rosu and b < albastru :
                               lungime = lungime + 1
@@ -64,17 +82,17 @@ def rutina_zi():
                               break
                     lungime_max_verde = max(lungime_max_verde, lungime)
                          
-     print("Lungimea maxima de pixeli verzi gasita este " + str(lungime_max_verde))
+     print("Lungimea maxima de pixeli verzi gasita este " + str(lungime_max_verde) + '.')
      print
      
      # salvam datele in csv file
      nr_pozitii_salvate=0
-     for y in xrange((ys-latura_patrat)/2, (ys+latura_patrat)/2):          # procesam doar pixelii care se afla in interiorul patratului de calibrare imagine
-          for x in xrange((xs-latura_patrat)/2, (xs+latura_patrat)/2):     
+     for y in range(int((ys-latura_patrat)/2), int((ys+latura_patrat)/2)):          # procesam doar pixelii care se afla in interiorul patratului de calibrare imagine
+          for x in range(int((xs-latura_patrat)/2), int((xs+latura_patrat)/2)):     
                [r, g, b] = img[x , y]
                if g > verde and r < rosu and b < albastru :
                     lungime=1
-                    for z in xrange(x+1, (xs+latura_patrat)/2):
+                    for z in range(x+1, int((xs+latura_patrat)/2)):
                          [r, g, b] = img[z, y]
                          if g > verde and r < rosu and b < albastru :
                               lungime = lungime + 1
@@ -88,30 +106,27 @@ def rutina_zi():
      print
   
      nr_verde = 0
-     for y in xrange((ys-latura_patrat)/2, (ys+latura_patrat)/2):          # procesam doar pixelii care se afla in interiorul patratului de calibrare imagine
-          for x in xrange((xs-latura_patrat)/2, (xs+latura_patrat)/2):     
+     for y in range(int((ys-latura_patrat)/2), int((ys+latura_patrat)/2)):          # procesam doar pixelii care se afla in interiorul patratului de calibrare imagine
+          for x in range(int((xs-latura_patrat)/2), int((xs+latura_patrat)/2)):     
                [r, g, b] = img[x, y]
                if g > verde and r < rosu and b < albastru :
                     nr_verde = nr_verde + 1
                     
-     print("Am gasit verde de "+str(nr_verde))
+     print("Am gasit verde de " + str(nr_verde) + '.')
      print
      print ('Gata cu rutina de zi  ........')
 
 
 
-
-# ###################################
-# Aici se termina programul si afiseaza linia de terminare
-
 def gata():
      print 
+     print ('.........................')
+     print ('... We just finished! ...')
      print ('.........................')
      print ('........  E N D  ........')
      print ('.........................')
      print 
-     sys.exit()
-
+     exit()
      print ('Gata cu programul, daca ajungi aici inseamna ca ai dat gres...')
 
 
@@ -133,12 +148,25 @@ print('......  Hello Astro-pi !  ......')
 print('................................')
 
 
-# Prima data facem poza
+# Salvam ora min si sec cand am pornit programul, pt ca apoi dupa 180 min inchidem automat programul.
 
-# Creem si golim fisierul CSV
-# Facem back la cel vechi
+# Trebuie setat aparatul pe foto de noapte long exposure.
+
+# Facem back la fisierul CSV cel vechi
+
+# Deschidem bucla do while timpul de executare a pozelor trece
+
+# Golim fisierul CSV
+
+# Aflam pozitia ISS
+
+# Facem poza
+
+# Salvam in CSV pozitia ISS si timpul (momentul exact incare se face poza pt a putea contraverifica daca poz ISS este buna)
 
 # Salvam pe disk (suprascriem) poza sub denumirea "_processed_image.jpg"
+
+
 
 # Import the file to be analyzed!
 
@@ -156,8 +184,8 @@ hi_pixel = 0             # valoarea cea mai mare gasita in img
 nr_low_pixel = 0         # cati pixeli cu val cea mai mica 
 average_pixel = 0        # val medie a pixelilor din intreaga img
 
-for x in xrange(1, xs):
-     for y in xrange(1, ys):
+for x in range(1, xs):
+     for y in range(1, ys):
           #  Get the RGB color of the pixel
           [r, g, b] = img[x, y]
 
@@ -181,7 +209,7 @@ average_pixel = average_pixel/3
 
 # !!!  set val ;a care se face diferentierea intre zi si noapte
 # la calcul practic aceasta val se compara cu suma r + g + b
-limita_luminozitate_medie_pixel_zi = 15                    # aceasta constatnta facediferentirea intr zi si noapte
+#limita_luminozitate_medie_pixel_zi = 15                    # aceasta constatnta facediferentirea intr zi si noapte
 if average_pixel > limita_luminozitate_medie_pixel_zi  :   # mergem la rutina de procesare img pt zi cand avem media de pixeli peste 15  
      rutina_zi()
 else:
@@ -197,7 +225,7 @@ else:
 
 
 
-gata()
+gata()    #  Inchei programul  , pe ISS se va ajunge aici doar cand trec cele 180 de minute.
 
 # ###################################
 # ###################################
