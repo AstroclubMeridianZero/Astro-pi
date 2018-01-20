@@ -1,0 +1,35 @@
+from sense_hat import  SenseHat
+import time
+    
+    
+sense = SenseHat()
+def sad ():
+    
+
+    z = (255,0,0)
+    o = (0,0,100)
+    s = (255,255,0)
+    
+    
+
+    sad_mark = [
+        o, o, z, z, z, z, o, o,
+        o, z, o, o, o, o, z, o,
+        z, o, s, o, o, s, o, z,
+        z, o, o, o, o, o, o, z,
+        z, o, o, s, s, o, o, z,
+        z, o, s, o, o, s, o, z,
+        o, z, o, o, o, o, z, o,
+        o, o, z, z, z, z, o, o
+        ]
+    sense.set_pixels(sad_mark)
+    sense.set_rotation(90)
+    time.sleep(1)
+    sense.set_rotation(180)
+    time.sleep(1)
+    sense.set_rotation(270)
+    time.sleep(1)
+    sense.set_rotation(0)
+    time.sleep(1)
+    
+sad()
