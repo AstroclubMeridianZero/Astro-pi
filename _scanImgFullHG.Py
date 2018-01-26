@@ -9,8 +9,9 @@ print('................................')
 # ###################################
 # IMPORT LIB
 
-# from picamera import PiCamera
-# import picamera
+from picamera import PiCamera
+from time import sleep
+#import picamera
 
 
 import math
@@ -53,15 +54,15 @@ import _pozitie_ISS   # ruleaza prg de locating ISS pt a avea acces la variabile
 
 
 
-total_time_processing = 10                                  # durata de functionare (procesare) a programului nostru in secunde (noi avem ladispozitie pe ISS fix 3ore!)
+total_time_processing = 20                                  # durata de functionare (procesare) a programului nostru in secunde (noi avem ladispozitie pe ISS fix 3ore!)
 #total_time_processing = 180*60
 
 
-calibrare_imagine = 35                                      # in procente, iseamna ca  numai calibrare_imagine % din imagine va fi procesat(patratul din mijloc) 0 ... 99
+calibrare_imagine = 60                                      # in procente, iseamna ca  numai calibrare_imagine % din imagine va fi procesat(patratul din mijloc) 0 ... 99
 										# cutting image for minimal spherical aberration
 
 
-limita_luminozitate_medie_pixel_zi = 117                    # aceasta constatnta face diferentirea intr zi si noapte 0 ... 255
+limita_luminozitate_medie_pixel_zi = 80                    # aceasta constatnta face diferentirea intr zi si noapte 0 ... 255
 							    # din experiente se considera 117 o val rezonabila intre zi si noapte
 
 
@@ -103,7 +104,7 @@ def rutina_noapte():
 	print
 
 	latura_patrat = int(calibrare_imagine * ys / 100)
-	print ('Media de luminozitate al pozei este : ' + str(average_pixel)) + '.'
+	print ('Media de luminozitate al pozei este : ' + str(average_pixel) + '.')
 	print ('Procesam ' + str(latura_patrat) + '/' + str(latura_patrat) + ' pixeli din ' + str(xs) + '/' + str(ys) + '.')
 	print
 
@@ -210,7 +211,7 @@ def rutina_zi():
 	print
 
 	latura_patrat = int(calibrare_imagine * ys / 100)
-	print ('Media de luminozitate al pozei este : ' + str(average_pixel)) + '.'
+	print ('Media de luminozitate al pozei este : ' + str(average_pixel) + '.')
 	print ('Procesam ' + str(latura_patrat) + '/' + str(latura_patrat) + ' pixeli din ' + str(xs) + '/' + str(ys) + '.')
 	print
 
@@ -327,13 +328,17 @@ f.close()
 
 
 # Setarile aparatul pe foto picamera de noapte long exposure.
-# with picamera.PiCamera() as camera:
-	# camera.resolution = (1280,960)
-	# camera.exposure_mode = 'off'
-	# camera.framerate =1
-	# camera.shutter_speed = 6000000
-	# camera.iso = 1600
-	# camera.capture('_processed_image.jpg')
+#with picamera.PiCamera() as camera:
+camera=PiCamera()
+camera.resolution = (1280,960)
+camera.exposure_mode = 'off'
+camera.framerate =1
+    
+camera.shutter_speed = 8000000
+camera.iso = 1600
+camera.capture('_processed_image.jpg')
+
+
 
 
 
@@ -341,99 +346,109 @@ f.close()
 
 nr_poza_procesata=0
 while ( time.clock()- time_start) < total_time_processing:
+    
 	
-	nr_poza_procesata=nr_poza_procesata+1
-	
-#       Denumim fisierul procesat cu incrementare manuala
-#	print ('Am inlocuit poza cu nr'+str(_poza_change.nr_poza))
+    nr_poza_procesata=nr_poza_procesata+1
 
-	
-	img_proc='_processed_image' + str(nr_poza_procesata) + '.jpg'
-	
-	print
-	print ('#################' + ' Image processed nr: ' + str(nr_poza_procesata) + ' #####')
-	print ('Mai avem la dispozitie '+ str(int(total_time_processing-(time.clock() - time_start))) + ' secunde.')
+    #       Denumim fisierul procesat cu incrementare manuala
+    #	print ('Am inlocuit poza cu nr'+str(_poza_change.nr_poza))
 
 
-
-	
-	# Aflam pozitia ISS
-
-
-        _pozitie_ISS.iss_pos()
-
-	print
-	print('Date & time from locating ISS ' + str(_pozitie_ISS.home_date_ISS))
-	print("ISS geografic positin is lat: " +str(_pozitie_ISS.lat)+ " long: "+str(_pozitie_ISS.longs))
+    camera.start_preview()
+    sleep(1)
+    camera.capture('_processed_image.jpg')
+    camera.stop_preview()
 
 
 
 
+    #img_proc='_processed_image' + str(nr_poza_procesata) + '.jpg'
+    img_proc='_processed_image' + '.jpg'
+
+    print
+    print ('#################' + ' Image processed nr: ' + str(nr_poza_procesata) + ' #####')
+    print ('Mai avem la dispozitie '+ str(int(total_time_processing-(time.clock() - time_start))) + ' secunde.')
 
 
-
-
-
-
-
-	# Facem poza
-
-
-	# Salvam pe disk (suprascriem) poza sub denumirea "_processed_image.jpg"
-
-
-
-	# Import the file to be analyzed!
-
-	img_file = Image.open(img_proc)
-	#img_file = Image.open("_processed_image.jpg")
-	img = img_file.load()  # salvam toti pixeli in matricea img
-
-	# Get image width & height in pixels
-
-	[xs, ys] = img_file.size      # xs lungimea in pixeli    ys  latimea in pixeli ai img
-
-	#  Examine min max averrage in each pixel in the image file
-
-	low_pixel = 255 * 3      # valoarea cea mai mica gasita in img
-	hi_pixel = 0             # valoarea cea mai mare gasita in img
-	nr_low_pixel = 0         # cati pixeli cu val cea mai mica 
-	average_pixel = 0        # val medie a pixelilor din intreaga img
 
 	
-	latura_patrat = int(calibrare_imagine * ys / 100)
-	for y in range(int((ys-latura_patrat)/2), int((ys+latura_patrat)/2)):
-		for x in range(int((xs-latura_patrat)/2), int((xs+latura_patrat)/2)):
-			#  Get the RGB color of the pixel
-			[r, g, b] = img[x, y]
+    # Aflam pozitia ISS
 
-			sum_pixel = r + b + g    # salvam val cea mai mica
-			if low_pixel > sum_pixel:
-				low_pixel = r + g + b 
-				nr_low_pixel = nr_low_pixel + 1
 
-			average_pixel = average_pixel + sum_pixel
+    _pozitie_ISS.iss_pos()
+
+    print
+    print('Date & time from locating ISS ' + str(_pozitie_ISS.home_date_ISS))
+    print("ISS geografic positin is lat: " +str(_pozitie_ISS.lat)+ " long: "+str(_pozitie_ISS.longs))
 
 
 
-	#  Stabilim Zi sau Noapte - caculand media pixelilor in the image file 
-	#  Mergem la rutina de calcul pentru Zi si pt Noapte continuam aici
-
-	average_pixel = average_pixel/latura_patrat
-	average_pixel = average_pixel/latura_patrat
-	average_pixel = average_pixel/3
-	# print ('Media de luminozitate al pozei este : ' + str(average_pixel))
 
 
-	# !!!  seam val la care se face diferentierea intre zi si noapte
-	# la calcul practic aceasta val se compara cu suma r + g + b
-	#limita_luminozitate_medie_pixel_zi = 15                    # aceasta constatnta facediferentirea intr zi si noapte
 
 
-	if average_pixel > limita_luminozitate_medie_pixel_zi  :   # mergem la rutina de procesare img pt zi cand avem media de pixeli peste 15  
-		rutina_zi()
-	else:
-		rutina_noapte()                                       #  Continuam cu programul pentru cazul de noapte
+
+
+
+
+    # Facem poza
+
+
+    # Salvam pe disk (suprascriem) poza sub denumirea "_processed_image.jpg"
+
+
+
+    # Import the file to be analyzed!
+
+    img_file = Image.open(img_proc)
+    #img_file = Image.open("_processed_image.jpg")
+    img = img_file.load()  # salvam toti pixeli in matricea img
+
+    # Get image width & height in pixels
+
+    [xs, ys] = img_file.size      # xs lungimea in pixeli    ys  latimea in pixeli ai img
+
+    #  Examine min max averrage in each pixel in the image file
+
+    low_pixel = 255 * 3      # valoarea cea mai mica gasita in img
+    hi_pixel = 0             # valoarea cea mai mare gasita in img
+    nr_low_pixel = 0         # cati pixeli cu val cea mai mica 
+    average_pixel = 0        # val medie a pixelilor din intreaga img
+
+
+    latura_patrat = int(calibrare_imagine * ys / 100)
+    for y in range(int((ys-latura_patrat)/2), int((ys+latura_patrat)/2)):
+            for x in range(int((xs-latura_patrat)/2), int((xs+latura_patrat)/2)):
+                    #  Get the RGB color of the pixel
+                    [r, g, b] = img[x, y]
+
+                    sum_pixel = r + b + g    # salvam val cea mai mica
+                    if low_pixel > sum_pixel:
+                            low_pixel = r + g + b 
+                            nr_low_pixel = nr_low_pixel + 1
+
+                    average_pixel = average_pixel + sum_pixel
+
+
+
+    #  Stabilim Zi sau Noapte - caculand media pixelilor in the image file 
+    #  Mergem la rutina de calcul pentru Zi si pt Noapte continuam aici
+
+    average_pixel = average_pixel/latura_patrat
+    average_pixel = average_pixel/latura_patrat
+    average_pixel = average_pixel/3
+    # print ('Media de luminozitate al pozei este : ' + str(average_pixel))
+
+
+    # !!!  seam val la care se face diferentierea intre zi si noapte
+    # la calcul practic aceasta val se compara cu suma r + g + b
+    #limita_luminozitate_medie_pixel_zi = 15                    # aceasta constatnta facediferentirea intr zi si noapte
+
+
+    if average_pixel > limita_luminozitate_medie_pixel_zi  :# mergem la rutina de procesare img pt zi cand avem media de pixeli peste 15  
+        rutina_zi()
+    else:
+        rutina_noapte()                                       #  Continuam cu programul pentru cazul de noapte
 
 
 
