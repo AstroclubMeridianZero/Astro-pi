@@ -11,20 +11,24 @@ sense = SenseHat()
 
 #matrice soare
 
-def sun():
+def sun ():
     
-    x = (255,255,0)
-    o = (0,0,100)
+
+    z = (255,0,0)
+    o = (50,50,50)
+    s = (255,255,0)
+    s1= (200,200,0)
+    s2= (130,130,0)
     
 
     sun_mark = [
-        x, x, x, x, o, x, x, o,
-        x, x, x, o, o, o, o, o,
-        x, x, o, o, x, o, o, o,
-        x, o, o, o, o, x, o, o,
-        o, o, x, o, o, o, o, o,
-        x, o, o, x, o, o, o, o,
-        x, o, o, o, o, o, o, o,
+        o, o, o, s2, o, o, o, o,
+        o, s2, o, s1, o, s2, o, o,
+        o, o, s1, s, s1, o, o, o,
+        s2, s1, s, s, s, s1, s2, o,
+        o, o, s1, s, s1, o, o, o,
+        o, s2, o, s1, o, s2, o, o,
+        o, o, o, s2, o, o, o, o,
         o, o, o, o, o, o, o, o
         ]
     sense.set_pixels(sun_mark)
@@ -36,6 +40,8 @@ def sun():
     time.sleep(1)
     sense.set_rotation(0)
     time.sleep(1)
+
+
 
 #matrice luna
     
@@ -67,24 +73,26 @@ def moon():
     sense.set_rotation(0)
     time.sleep(1)
 
-def smile ():
+def smile():
     
 
-    z = (0,255,0)
-    o = (0,0,100)
-    s = (255,255,0)
+    z = (0,255,0) # verde
+    x = (0,47,0) # verde slab
+    o = (0,0,100) # albastru
+    s = (0,255,0) # galben
+    a = (0,255,0) # alb
     
     
 
     smile_mark = [
-        o, o, z, z, z, z, o, o,
-        o, z, o, o, o, o, z, o,
-        z, o, s, o, o, s, o, z,
-        z, o, o, o, o, o, o, z,
-        z, o, s, o, o, s, o, z,
-        z, o, o, s, s, o, o, z,
-        o, z, o, o, o, o, z, o,
-        o, o, z, z, z, z, o, o
+        x, x, a, a, a, a, x, x,
+        x, a, x, x, x, x, a, x,
+        a, x, s, x, x, s, x, a,
+        a, x, x, x, x, x, x, a,
+        a, x, s, x, x, s, x, a,
+        a, x, x, s, s, x, x, a,
+        x, a, x, x, x, x, a, x,
+        x, x, a, a, a, a, x, x
         ]
     sense.set_pixels(smile_mark)
     sense.set_rotation(90)
@@ -128,21 +136,53 @@ def winky():
         bl, bl, bl, bl, bl, ye, ye, bl,
         bl, ye, ye, bl, bl, ye, ye, bl,
         bl, bl, bl, bl, bl, bl, bl, bl,
-        ye, bl, bl, bl, bl, bl, bl, ye,
+        bl, bl, bl, bl, bl, bl, bl, bl,
         bl, ye, bl, bl, bl, bl, ye, bl,
         bl, bl, ye, ye, ye, ye, bl, bl,
         bl, bl, bl, bl, bl, bl, bl, bl
         ]
-    sense.set_pixels(winky_face)
+    smiley_face = [
+        bl, bl, bl, bl, bl, bl, bl, bl,
+        bl, ye, ye, bl, bl, ye, ye, bl,
+        bl, ye, ye, bl, bl, ye, ye, bl,
+        bl, bl, bl, bl, bl, bl, bl, bl,
+        bl, bl, bl, bl, bl, bl, bl, bl,
+        bl, ye, bl, bl, bl, bl, ye, bl,
+        bl, bl, ye, ye, ye, ye, bl, bl,
+        bl, bl, bl, bl, bl, bl, bl, bl
+        ]
     sense.set_rotation(90)
+    sense.set_pixels(winky_face)
     time.sleep(1)
+    sense.set_pixels(smiley_face)
+    time.sleep(0.33)
+    sense.set_pixels(winky_face)
+    time.sleep(0.33)
+    
     sense.set_rotation(180)
+    sense.set_pixels(winky_face)
     time.sleep(1)
+    sense.set_pixels(smiley_face)
+    time.sleep(0.33)
+    sense.set_pixels(winky_face)
+    time.sleep(0.33)
+    
     sense.set_rotation(270)
+    sense.set_pixels(winky_face)
     time.sleep(1)
+    sense.set_pixels(smiley_face)
+    time.sleep(0.33)
+    sense.set_pixels(winky_face)
+    time.sleep(0.33)
+    
     sense.set_rotation(0)
+    sense.set_pixels(winky_face)
     time.sleep(1)
-
+    sense.set_pixels(smiley_face)
+    time.sleep(0.33)
+    sense.set_pixels(winky_face)
+    time.sleep(0.33)
+    
 def sad():
         
     sad_face = [
@@ -152,7 +192,7 @@ def sad():
         bl, bl, bl, bl, bl, bl, bl, bl,
         bl, bl, red, red, red, red, bl, bl,
         bl, red, bl, bl, bl, bl, red, bl,
-        red, bl, bl, bl, bl, bl, bl, red,
+        bl, bl, bl, bl, bl, bl, bl, bl,
         bl, bl, bl, bl, bl, bl, bl, bl
         ]
     sense.set_pixels(sad_face)
@@ -171,14 +211,15 @@ ye = (255, 255, 0)# yellow
 bl = (0, 0, 150)  # blank
 green = (0, 255, 0)
 red =(255, 0, 0)
-    
-sun()
+
 
 moon()
 
+sun()
+
 smile()
 
-smiley()
+# smiley()
 
 winky()
 
