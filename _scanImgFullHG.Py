@@ -58,7 +58,7 @@ import _pozitie_ISS   # ruleaza prg de locating ISS pt a avea acces la variabile
 sense = SenseHat()
 sense.show_message('Starting !')
 
-total_time_processing = 50                                  # durata de functionare (procesare) a programului nostru in secunde (noi avem ladispozitie pe ISS fix 3ore!)
+total_time_processing = 180*60                                  # durata de functionare (procesare) a programului nostru in secunde (noi avem ladispozitie pe ISS fix 3ore!)
 #total_time_processing = 180*60
 
 
@@ -141,12 +141,12 @@ def rutina_noapte():
     for y in range(int((ys-latura_patrat)/2), int((ys+latura_patrat)/2)):          # procesam doar pixelii care se afla in interiorul patratului de calibrare imagine
             for x in range(int((xs-latura_patrat)/2), int((xs+latura_patrat)/2)):     
                     [r, g, b] = img[x , y]
-                    if cel_mai_negru_pixel == r + g + b and lungime < latura_patrat + 1 :
+                    if cel_mai_negru_pixel == r + g + b and lungime < 100 + 1 :
 
                             lungime=1
                             for z in range(x+1, int((xs+latura_patrat)/2)):
                                     [r, g, b] = img[z, y]
-                                    if cel_mai_negru_pixel == r + g + b :
+                                    if cel_mai_negru_pixel == r + g + b and lungime < 100 + 1:
                                             lungime = lungime + 1
                                     else:
                                             break
@@ -165,13 +165,13 @@ def rutina_noapte():
                     # procesam doar pixelii care se afla in interiorul patratului de calibrare imagine
                     for x in range(int((xs-latura_patrat)/2), int((xs+latura_patrat)/2)):
                             [r, g, b] = img[x , y]
-                            if cel_mai_negru_pixel == r + g + b :
+                            if cel_mai_negru_pixel == r + g + b and lungime < 100 + 1:
 
                                     lungime=1
                                     for z in range(x+1, int((xs+latura_patrat)/2)):
 
                                             [r, g, b] = img[z, y]
-                                            if cel_mai_negru_pixel == r + g + b :
+                                            if cel_mai_negru_pixel == r + g + b and lungime < 100 + 1:
                                                     lungime = lungime + 1
                                             else:
                                                     break
@@ -201,7 +201,7 @@ def rutina_noapte():
     if nr_pozitii_salvate > 0 :
         _emojy.smiley()
     else:
-        _emojy.sad()
+        _emojy.wave()
         
     print ('Gata cu rutina de noapte  ........')
 
@@ -241,11 +241,11 @@ def rutina_zi():
     for y in range(int((ys-latura_patrat)/2), int((ys+latura_patrat)/2)):          # procesam doar pixelii care se afla in interiorul patratului de calibrare imagine
             for x in range(int((xs-latura_patrat)/2), int((xs+latura_patrat)/2)):     
                     [r, g, b] = img[x , y]
-                    if g > r + 20 and g > b + 30 :
+                    if g > r + 10 and g > b + 15 :
                             lungime=1
                             for z in range(x+1, int((xs+latura_patrat)/2)):
                                     [r, g, b] = img[z, y]
-                                    if g > r + 20 and g > b + 30 :
+                                    if g > r + 10 and g > b + 15 :
                                             lungime = lungime + 1
                                     else:
                                             break
@@ -255,38 +255,38 @@ def rutina_zi():
     print
 
     # salvam datele in csv file
-    nr_pozitii_salvate=0
-    for y in range(int((ys-latura_patrat)/2), int((ys+latura_patrat)/2)):          # procesam doar pixelii care se afla in interiorul patratului de calibrare imagine
-            for x in range(int((xs-latura_patrat)/2), int((xs+latura_patrat)/2)):     
-                    [r, g, b] = img[x , y]
-                    if g > r + 20 and g > b + 30 :
-                            lungime=1
-                            for z in range(x+1, int((xs+latura_patrat)/2)):
-                                    [r, g, b] = img[z, y]
-                                    if g > r + 20 and g > b + 30 :
-                                            lungime = lungime + 1
-                                    else:
-                                            break
-                            if lungime_max_verde == lungime :
-                                    nr_pozitii_salvate = nr_pozitii_salvate+1
-                            #  aici se face adaugarea in csv file  !!!!!!!!!!!!!
+    #nr_pozitii_salvate=0
+    #for y in range(int((ys-latura_patrat)/2), int((ys+latura_patrat)/2)):          # procesam doar pixelii care se afla in interiorul patratului de calibrare imagine
+    #        for x in range(int((xs-latura_patrat)/2), int((xs+latura_patrat)/2)):     
+    #                [r, g, b] = img[x , y]
+    #                if g > r + 20 and g > b + 30 :
+    #                        lungime=1
+    #                        for z in range(x+1, int((xs+latura_patrat)/2)):
+    #                                [r, g, b] = img[z, y]
+    #                                if g > r + 20 and g > b + 30 :
+    #                                        lungime = lungime + 1
+    #                                else:
+    #                                        break
+    #                        if lungime_max_verde == lungime :
+    #                                nr_pozitii_salvate = nr_pozitii_salvate+1
+    #                        #  aici se face adaugarea in csv file  !!!!!!!!!!!!!#
 
-    print ('Total  '+str(nr_pozitii_salvate)+'  de pozitii de verde adaugate! ')                     
-    print
+    #print ('Total  '+str(nr_pozitii_salvate)+'  de pozitii de verde adaugate! ')                     
+    #print
 
     nr_verde = 0
-    for y in range(int((ys-latura_patrat)/2), int((ys+latura_patrat)/2)):          # procesam doar pixelii care se afla in interiorul patratului de calibrare imagine
-            for x in range(int((xs-latura_patrat)/2), int((xs+latura_patrat)/2)):     
-                    [r, g, b] = img[x, y]
-                    if g > r + 20 and g > b + 30 :
-                            nr_verde = nr_verde + 1
+    #for y in range(int((ys-latura_patrat)/2), int((ys+latura_patrat)/2)):          # procesam doar pixelii care se afla in interiorul patratului de calibrare imagine
+    #        for x in range(int((xs-latura_patrat)/2), int((xs+latura_patrat)/2)):     
+    #                [r, g, b] = img[x, y]
+    #                if g > r + 20 and g > b + 30 :
+    #                        nr_verde = nr_verde + 1#
 
-    print("Am gasit verde de " + str(nr_verde) + '.')
-    if nr_pozitii_salvate > 0 :
+    #print("Am gasit verde de " + str(nr_verde) + '.')
+    if lungime_max_verde > 1 :
         _emojy.smile()
-        sense.show_message('Look vegetation !')        
+        sense.show_message('Look vegetation !', text_colour = (0,255,0))        
     else:
-        _emojy.sad()
+        _emojy.wave()
     print
     print ('Gata cu rutina de zi  ........')
 
@@ -348,14 +348,17 @@ f.close()
 #with picamera.PiCamera() as camera:
 camera=PiCamera()
 #camera.resolution = (1280,960)
-camera.exposure_mode = 'off'
-camera.framerate =1
-camera.shutter_speed = 6000000
-camera.iso = 1600
+#camera.exposure_mode = 'off'
+#camera.framerate =1
+#camera.shutter_speed = 6000000
+#camera.iso = 1600
 #camera.capture('_processed_image.jpg')
 
 average_pixel = 100
-
+camera.exposure_mode = 'auto'
+camera.framerate =30       #  cea default
+camera.shutter_speed = 0   # valoarea 0 inseamna auto
+camera.iso = 0
 
 
 # Deschidem bucla do while timpul de executare a pozelor trece
@@ -382,6 +385,8 @@ while ( time.clock()- time_start) < total_time_processing:
 
     # !!!!!!!!!!!!!!!!!    aici tre activate liniile pt a face poze real time
     
+  
+    
     if average_pixel > limita_luminozitate_medie_pixel_zi  :# mergem la rutina de procesare img pt zi cand avem media de pixeli peste 15  
         # rutina_zi()
         camera.exposure_mode = 'auto'
@@ -393,14 +398,15 @@ while ( time.clock()- time_start) < total_time_processing:
         #camera.resolution = (1280,960)
         camera.exposure_mode = 'off'
         camera.framerate =1
-        camera.shutter_speed = 6000000
+        camera.shutter_speed = 1000000
         camera.iso = 1600
-
-    _emojy.winky()
+    
     camera.start_preview()
-    sleep(1)
+    _emojy.winky()
+    sense.clear()
     camera.capture('_processed_image.jpg')
     camera.stop_preview()
+    _emojy.heart()
 
     
     
@@ -462,6 +468,25 @@ while ( time.clock()- time_start) < total_time_processing:
     average_pixel = average_pixel/3
     # print ('Media de luminozitate al pozei este : ' + str(average_pixel))
 
+    
+    if average_pixel == 0 :
+        average_pixel = 100
+    
+    
+    
+    if average_pixel > limita_luminozitate_medie_pixel_zi  :# mergem la rutina de procesare img pt zi cand avem media de pixeli peste 15  
+        # rutina_zi()
+        camera.exposure_mode = 'auto'
+        camera.framerate =30       #  cea default
+        camera.shutter_speed = 0   # valoarea 0 inseamna auto
+        camera.iso = 0   # 0 inseamna auto
+    else:
+        # rutina_noapte()     
+        #camera.resolution = (1280,960)
+        camera.exposure_mode = 'off'
+        camera.framerate =1
+        camera.shutter_speed = 6000000
+        camera.iso = 1600
 
     # !!!  seam val la care se face diferentierea intre zi si noapte
     # la calcul practic aceasta val se compara cu suma r + g + b

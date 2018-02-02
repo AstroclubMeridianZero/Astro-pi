@@ -11,6 +11,146 @@ sense = SenseHat()
 
 #matrice soare
 
+
+
+def wave():
+    green = (0, 255, 0)
+    yellow = (255, 255, 0)
+    blue = (0, 0, 255)
+    red = (255, 0, 0)
+    white = (255,255,255)
+    nothing = (0,0,0)
+    pink = (255,105, 180)
+    G = blue
+    R = red
+    O = nothing
+    logo1 = [
+    O, O, G, G, O, O, O, O, 
+    O, G, G, G, G, O, O, G,
+    G, G, O, O, G, G, G, G, 
+    G, O, O, O, O, G, G, O,
+    O, O, G, G, O, O, O, O, 
+    O, G, G, G, G, O, O, G,
+    G, G, O, O, G, G, G, G, 
+    G, O, O, O, O, G, G, O,
+    ]
+     
+    logo2 = [
+    O, G, G, O, O, O, O, G, 
+    G, G, G, G, O, O, G, G,
+    G, O, O, G, G, G, G, O, 
+    O, O, O, O, G, G, O, O,
+    O, G, G, O, O, O, O, G, 
+    G, G, G, G, O, O, G, G,
+    G, O, O, G, G, G, G, O, 
+    O, O, O, O, G, G, O, O,
+    ]
+     
+    logo3 = [
+    G, G, O, O, O, O, G, G, 
+    G, G, G, O, O, G, G, G,
+    O, O, G, G, G, G, O, O, 
+    O, O, O, G, G, O, O, O,
+    G, G, O, O, O, O, G, G, 
+    G, G, G, O, O, G, G, G,
+    O, O, G, G, G, G, O, O, 
+    O, O, O, G, G, O, O, O,
+    ]
+    
+    logo4 = [
+    G, O, O, O, O, G, G, O, 
+    G, G, O, O, G, G, G, G,
+    O, G, G, G, G, O, O, G, 
+    O, O, G, G, O, O, O, O,
+    G, O, O, O, O, G, G, O, 
+    G, G, O, O, G, G, G, G,
+    O, G, G, G, G, O, O, G, 
+    O, O, G, G, O, O, O, O,
+    ]
+    
+    logo5 = [
+    O, O, O, O, G, G, O, O, 
+    G, O, O, G, G, G, G, O,
+    G, G, G, G, O, O, G, G, 
+    O, G, G, O, O, O, O, G,
+    O, O, O, O, G, G, O, O, 
+    G, O, O, G, G, G, G, O,
+    G, G, G, G, O, O, G, G, 
+    O, G, G, O, O, O, O, G,
+    ]
+
+
+    sense.set_pixels(logo1)
+    time.sleep(1)
+    sense.set_pixels(logo2)
+    time.sleep(1)
+    sense.set_pixels(logo3)
+    time.sleep(1)
+    sense.set_pixels(logo4)
+    time.sleep(1)
+    sense.set_pixels(logo5)
+    time.sleep(1)
+
+
+
+
+
+
+
+
+nothing = (0,0,0)
+pink = (255,105, 180)
+pink1 = (255,00,00)
+
+
+def heart():
+
+
+
+
+    nothing = (0,0,0)
+    pink = (255,105, 180)
+    P1 = (255,00,00)
+    P = pink
+    O = nothing
+    
+    
+    logo = [
+    O, O, O, O, O, O, O, O,
+    O, P, P, O, P, P, O, O,
+    P, P, P, P, P, P, P, O,
+    P, P, P, P, P, P, P, O,
+    O, P, P, P, P, P, O, O,
+    O, O, P, P, P, O, O, O,
+    O, O, O, P, O, O, O, O,
+    O, O, O, O, O, O, O, O,
+    ]
+    
+
+    logo1 = [
+    O, O, O, O, O, O, O, O,
+    O, P1, P1, O, P1, P1, O, O,
+    P1, P1, P1, P1, P1, P1, P1, O,
+    P1, P1, P1, P1, P1, P1, P1, O,
+    O, P1, P1, P1, P1, P1, O, O,
+    O, O, P1, P1, P1, O, O, O,
+    O, O, O, P1, O, O, O, O,
+    O, O, O, O, O, O, O, O,
+    ]
+ 
+    sense.set_pixels(logo1)
+    time.sleep(1)
+    sense.set_pixels(logo)
+    time.sleep(1)
+    sense.set_pixels(logo1)
+    time.sleep(1)
+    sense.set_pixels(logo)
+    time.sleep(1)
+    sense.set_pixels(logo1)
+    time.sleep(1)
+
+
+
 def sun ():
     
 
@@ -114,7 +254,7 @@ def smiley():
         bl, ye, ye, bl, bl, ye, ye, bl,
         bl, ye, ye, bl, bl, ye, ye, bl,
         bl, bl, bl, bl, bl, bl, bl, bl,
-        ye, bl, bl, bl, bl, bl, bl, ye,
+        bl, bl, ye, ye, ye, ye, bl, bl,
         bl, ye, bl, bl, bl, bl, ye, bl,
         bl, bl, ye, ye, ye, ye, bl, bl,
         bl, bl, bl, bl, bl, bl, bl, bl
@@ -213,17 +353,19 @@ green = (0, 255, 0)
 red =(255, 0, 0)
 
 
-moon()
+#moon()
 
-sun()
+#sun()
 
-smile()
+heart()
 
-# smiley()
+wave()
 
-winky()
+#smile()
 
-sad()
+#winky()
+
+#sad()
       
 sense.clear()
     
